@@ -2,42 +2,44 @@ from backend import slicingData,DataInfo,DataHandeling
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.impute import SimpleImputer
 
 
-dataInput=st.sidebar.file_uploader("Input CSV file",type={"csv","txt"})
+
+dataInput=st.sidebar.file_uploader("Input CSV file",type={"csv","txt","xls", "xlsx", "ods", "odt"})
 
 if dataInput:
     data=pd.read_csv(dataInput)
     df=pd.DataFrame(data)
 
+    
+
     process=st.sidebar.button("Fill Empty Values")
     if process:
-        data=DataHandeling.fillna(data)
+        data= DataHandeling.fillna(data)
         df=pd.DataFrame(data)
-        st.write("Null values filled")
+        st.write(df)
     
+
     drop=st.sidebar.button("Drop rows with null values")
     if drop:
-        data.dropna(axis=0,how="any")
-        df=pd.DataFrame(data)
+        df.dropna(axis=1,how="any")
+        
+
+        st.dataframe(df)
         st.write("Null value Columns dropped")
         
-    st.sidebar.download_button(
-            "Download processed file",
-            df.to_csv(index=False).encode('utf-8'),
-            "file.csv",
-            "text/csv",
-            key='download-csv'
-            )
 
+   
 
     if st.sidebar.button("show data"):
         st.dataframe(df)
-        st.write(DataInfo.info(data))
-        st.write(DataInfo.description(data))
+        st.write(DataInfo.description(df))
+        
         
 
-    num,cat=slicingData.slice(data)
+    num,cat=slicingData.slice(df)
 
     type=["categorical","numerical"]
 
