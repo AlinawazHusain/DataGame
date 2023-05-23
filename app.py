@@ -10,7 +10,9 @@ from sklearn.impute import SimpleImputer
 dataInput=st.sidebar.file_uploader("Input CSV file",type={"csv","txt","xls", "xlsx", "ods", "odt"})
 
 if dataInput:
-    data=pd.read_csv(dataInput)
+    fnd = str.find(str(dataInput.name), ".")
+    sub=str(dataInput.name)[fnd:]
+    data=pd.read_csv(dataInput) if sub=='.csv' else pd.read_excel(dataInput)
     df=pd.DataFrame(data)
 
     
